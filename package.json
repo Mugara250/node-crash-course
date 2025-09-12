@@ -1,0 +1,28 @@
+{
+  "name": "crash-course",
+  "version": "1.0.0",
+  "description": "Course files for the Node.js Crash Course tutorial series on The Net Ninja YouTube channel.",
+  "homepage": "https://github.com/Mugara250/node-crash-course#readme",
+  "bugs": {
+    "url": "https://github.com/Mugara250/node-crash-course/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mugara250/node-crash-course.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "files.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "lodash": "^4.17.21"
+  }
+}
