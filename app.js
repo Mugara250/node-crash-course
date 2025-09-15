@@ -1,14 +1,19 @@
 const express = require("express");
-
+const morgan = require("morgan");
 // express app
 const app = express();
 
+// mongodb connection
+const dbURI = "mongodb+srv://Mugara:<db_password>@nodetutorial.yh5z6dm.mongodb.net/?retryWrites=true&w=majority&appName=NodeTutorial";
 // register view engine
 app.set("view engine", "ejs");
 
 // starting the server
 app.listen(3000);
 
+// middleware
+app.use(express.static("public"));
+app.use(morgan("dev"));
 // listening for and responding to requests
 app.get("/", (request, response) => {
     const blogs = [
