@@ -1,27 +1,42 @@
 const express = require("express");
 const morgan = require("morgan");
+const Blog = require("./models/blogs");
+const mongoose = require("mongoose");
 // express app
 const app = express();
 
 // mongodb connection
-const dbURI = "mongodb+srv://Mugara:<db_password>@nodetutorial.yh5z6dm.mongodb.net/?retryWrites=true&w=majority&appName=NodeTutorial";
+const dbURI =
+  "mongodb+srv://Mugara:1234@nodetutorial.yh5z6dm.mongodb.net/NodeTutorial?retryWrites=true&w=majority&appName=NodeTutorial";
+mongoose
+  .connect(dbURI)
+  .then((result) => {
+    // starting the server once the connection has been made to the database
+    app.listen(3000);
+  })
+  .catch((err) => console.log(err));
+
 // register view engine
 app.set("view engine", "ejs");
-
-// starting the server
-app.listen(3000);
 
 // middleware
 app.use(express.static("public"));
 app.use(morgan("dev"));
+
+app.get("/all-blogs", (request, response) => {
+  Blog.find()
+    .then((result) => response.send(result))
+    .catch((err) => console.log(err));
+});
+
+app.get("/single-blog", (request, response) => {
+  Blog.findById("68c82d99675e30b763d506d4")
+    .then((result) => response.send(result))
+    .catch((err) => console.log(err));
+});
 // listening for and responding to requests
 app.get("/", (request, response) => {
-    const blogs = [
-        {title: "Yoshi finds eggs", snippet: 'Lorem ipsum dolor sit amet consectetur'},
-        {title: "Mario finds stars", snippet: 'Lorem ipsum dolor sit amet consectetur'},
-        {title: "How to defeat bowser", snippet: 'Lorem ipsum dolor sit amet consectetur'},
-    ]
-  response.render("index", { title: "Home", blogs });
+  response.redirect("/blogs");
 });
 
 app.get("/about", (request, response) => {
@@ -30,6 +45,15 @@ app.get("/about", (request, response) => {
 
 app.get("/blogs/create", (request, response) => {
   response.render("create", { title: "Create" });
+});
+
+app.get("/blogs", (request, response) => {
+  Blog.find()
+    .sort({ createdAt: -1 })
+    .then((blogs) => {
+      response.render("index", { title: "All Blogs", blogs });
+    })
+    .catch((err) => console.log(err));
 });
 
 // 404 error
