@@ -21,6 +21,7 @@ app.set("view engine", "ejs");
 
 // middleware
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
 app.get("/all-blogs", (request, response) => {
@@ -47,6 +48,28 @@ app.get("/blogs/create", (request, response) => {
   response.render("create", { title: "Create" });
 });
 
+app.get("/blogs/:id", (request, response) => {
+  const id = request.params.id;
+  Blog.findById(id)
+    .then((blog) => {
+      response.render("details", { blog, title: "Blog details" });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.delete("/blogs/:id", (request, response) => {
+  const id = request.params.id;
+  Blog.findByIdAndDelete(id)
+    .then((blog) => {
+      response.status(200).json({redirect: "/blogs"});
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+})
+
 app.get("/blogs", (request, response) => {
   Blog.find()
     .sort({ createdAt: -1 })
@@ -54,6 +77,18 @@ app.get("/blogs", (request, response) => {
       response.render("index", { title: "All Blogs", blogs });
     })
     .catch((err) => console.log(err));
+});
+
+app.post("/blogs", (request, response) => {
+  const blog = new Blog(request.body);
+  blog
+    .save()
+    .then((result) => {
+      response.redirect("/blogs");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 // 404 error
